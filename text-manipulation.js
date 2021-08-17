@@ -82,6 +82,13 @@ function manipulateText() {
             regEx = new RegExp(searchTermInput.value, "gi");
             manipulationOutput.value = manipulationInput.value.replaceAll(regEx, replaceTermInput.value);
         }
+    // If “Add Line Numbers” is selected.
+    } else if (manipulationSelect.value === "Add Line Numbers") {
+        // Convert the input string into an array.
+        inputToArray = manipulationInput.value.split("\n");
+        // Map each array value to a new array where each item is prepended with a number, and then join the array.
+        inputWithLineNumbers = inputToArray.map((line, index) => `${index+1}. ${line}`).join("\n");
+        manipulationOutput.value = inputWithLineNumbers;
     // If “To Lowercase” is selected.
     } else if (manipulationSelect.value === "To Lowercase") {
         manipulationOutput.value = manipulationInput.value.toLowerCase()
