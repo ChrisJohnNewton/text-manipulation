@@ -124,3 +124,26 @@ function manipulateText() {
         manipulationOutput.value = "Your output will appear here…";
     }
 }
+
+/*
+    POLYFILLS.
+*/
+
+/*
+    String.prototype.replaceAll() polyfill
+    Credit goes to Chris Ferdinandi
+    https://vanillajstoolkit.com/polyfills/stringreplaceall/
+*/
+if (! String.prototype.replaceAll) {
+	String.prototype.replaceAll = function(str, newStr){
+
+		// If a regex pattern
+		if (Object.prototype.toString.call(str).toLowerCase() === '[object regexp]') {
+			return this.replace(str, newStr);
+		}
+
+		// If a string
+		return this.replace(new RegExp(str, 'g'), newStr);
+
+	};
+}
