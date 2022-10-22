@@ -3,67 +3,69 @@
 */
 const manipulationSelect = document.getElementById('manipulation-select'),
 searchTermLabel = document.getElementById('search-term-label'),
-replaceTermLabel = document.getElementById('replace-term-label'),
 searchTermInput = document.getElementById('search-term-input'),
-caseSensitivityDiv = document.getElementById('case-sensitivity'),
-caseSensitiveInput = document.getElementById('sensitive'),
+replaceTermLabel = document.getElementById('replace-term-label'),
 replaceTermInput = document.getElementById('replace-term-input'),
+manipulationSensitivity = document.getElementById('manipulation-sensitivity'),
 manipulationInput = document.getElementById('manipulation-input'),
 manipulationOutput = document.getElementById('manipulation-output'),
-copyButton = document.getElementById('copy'),
-copyTooltip = document.querySelector('[data-tooltip]');
+copyButton = document.getElementById('copy');
 
 /*
     ADD EVENT LISTENERS TO THE NECESSARY ELEMENTS.
 */
-manipulationSelect.addEventListener('change', ()=>{
+manipulationSelect.addEventListener('change', () => {
     // If “Search & Replace” is not selected, hide it's related elements.
     if (manipulationSelect.value !== "Search & Replace") {
         searchTermLabel.style.display = "none";
         replaceTermLabel.style.display = "none";
-        caseSensitivityDiv.style.display = "none";
+        manipulationSensitivity.parentNode.style.display = "none";
     // If “Search & Replace” is selected, show it's related elements.
     } else {
-        searchTermLabel.style.display = "grid";
-        replaceTermLabel.style.display = "grid";
-        caseSensitivityDiv.style.display = "flex";
+        searchTermLabel.style.removeProperty("display");
+        replaceTermLabel.style.removeProperty("display");
+        manipulationSensitivity.parentNode.style.removeProperty("display");
     }
     manipulateText();
-}),
-manipulationInput.addEventListener('input', ()=>{
-    manipulateText();
-}),
-searchTermInput.addEventListener('input', ()=>{
-    manipulateText();
-}),
-replaceTermInput.addEventListener('input', ()=>{
-    manipulateText();
-}),
+});
+
+[searchTermInput, replaceTermInput, manipulationSensitivity].forEach(e => {
+    e.addEventListener('change', () => {
+        manipulateText();
+    })
+});
+
+[manipulationInput, searchTermInput, replaceTermInput].forEach(e => {
+    e.addEventListener('input', () => {
+        manipulateText();
+    })
+});
+
 copyButton.addEventListener('click', ()=>{
     // If the default output text is not present.
     if (manipulationOutput.value !== "Your output will appear here…") {
         // Select the output text.
         manipulationOutput.focus();
         manipulationOutput.select();
-        manipulationOutput.setSelectionRange(0, manipulationOutput.value.length); // Useful for browsers that don't suppot select()
+        manipulationOutput.setSelectionRange(0, manipulationOutput.value.length); // Useful for browsers that don't support select()
         
         // Copy the output text.
         document.execCommand('copy');
-        
+
+        // Add the class that changes the opacity of the tooltip's pseudoelements to one.
+        copyButton.classList.add('tooltipOpaque');
+
         // Change the colour of the fill of the copy button.
-        copyButton.style.fill = "var(--mainColour)";
+        copyButton.firstChild.firstChild.style.fill = "rgb(var(--colour-primary))"
         
-        // Add the class that changes the opacity of the tooltip's pseudoelements.
-        copyTooltip.classList.add('tooltipOpaque');
-        
-        // Wait 1.5 seconds.
+        // Wait 2.5 seconds.
         setTimeout(()=>{
-            // Remove the class that changes the opacity of the tooltip's pseudoelements.
-            copyTooltip.classList.remove('tooltipOpaque');
+            // Remove the class that changes the opacity of the tooltip's pseudoelements to one.
+             copyButton.classList.remove('tooltipOpaque');
             
             // Change back the colour of the fill of the copy button.
-            copyButton.style.fill = "#000";
-        }, 1500);
+            copyButton.firstChild.firstChild.style.removeProperty("fill");
+        }, 2500);
     }
 });
 
@@ -75,7 +77,7 @@ function manipulateText() {
     // If “Search & Replace” is selected.
     if (manipulationSelect.value === "Search & Replace") {
         // If case-sensitive radio button is checked.
-        if (caseSensitiveInput.checked) {
+        if (!manipulationSensitivity.checked) {
             manipulationOutput.value = manipulationInput.value.replaceAll(searchTermInput.value, replaceTermInput.value);
         // If case-insensitive radio button is checked.
         } else {
