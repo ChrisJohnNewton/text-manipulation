@@ -5,3 +5,4 @@ A simple text manipulation tool that can convert characters within strings and p
 Made using:
 - JavaScript
 - HTML5
+- CSS
